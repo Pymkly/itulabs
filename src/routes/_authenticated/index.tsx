@@ -31,12 +31,12 @@ const ROLE_DESCRIPTION: Record<Role, string> = {
 
 // `to` rend la tuile cliquable et enlève le badge « Bientôt » : on l'ajoute
 // au fur et à mesure que les écrans correspondants sont livrés.
-type Tile = { title: string; desc: string; to?: '/catalogue' }
+type Tile = { title: string; desc: string; to?: '/catalogue' | '/achats' }
 
 const TILES_BY_ROLE: Record<Role, Tile[]> = {
   super: [
     { title: 'Catalogue', desc: 'Matériels et paliers de prix', to: '/catalogue' },
-    { title: 'Achats', desc: 'Entrées de stock par achat' },
+    { title: 'Achats', desc: 'Entrées de stock par achat', to: '/achats' },
     { title: 'Équipes', desc: '12 équipes du hackathon' },
     { title: 'Emprunts', desc: 'Demandes et validations' },
     { title: 'Retours', desc: 'Suivi des restitutions' },

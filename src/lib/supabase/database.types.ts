@@ -500,6 +500,16 @@ export type Database = {
       }
     }
     Functions: {
+      enregistrer_achat: {
+        Args: {
+          p_date_achat: string
+          p_fournisseur: string
+          p_lignes: Json
+          p_notes: string
+          p_responsable_id: string
+        }
+        Returns: string
+      }
       profil_equipe: { Args: never; Returns: string }
       profil_role: {
         Args: never

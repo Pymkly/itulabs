@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedStyleguideRouteImport } from './routes/_authenticated/styleguide'
 import { Route as AuthenticatedCatalogueRouteImport } from './routes/_authenticated/catalogue'
+import { Route as AuthenticatedAchatsIndexRouteImport } from './routes/_authenticated/achats/index'
+import { Route as AuthenticatedAchatsNouveauRouteImport } from './routes/_authenticated/achats/nouveau'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -39,18 +41,34 @@ const AuthenticatedCatalogueRoute = AuthenticatedCatalogueRouteImport.update({
   path: '/catalogue',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAchatsIndexRoute =
+  AuthenticatedAchatsIndexRouteImport.update({
+    id: '/achats/',
+    path: '/achats/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAchatsNouveauRoute =
+  AuthenticatedAchatsNouveauRouteImport.update({
+    id: '/achats/nouveau',
+    path: '/achats/nouveau',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/catalogue': typeof AuthenticatedCatalogueRoute
   '/styleguide': typeof AuthenticatedStyleguideRoute
+  '/achats/nouveau': typeof AuthenticatedAchatsNouveauRoute
+  '/achats/': typeof AuthenticatedAchatsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/catalogue': typeof AuthenticatedCatalogueRoute
   '/styleguide': typeof AuthenticatedStyleguideRoute
   '/': typeof AuthenticatedIndexRoute
+  '/achats/nouveau': typeof AuthenticatedAchatsNouveauRoute
+  '/achats': typeof AuthenticatedAchatsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +77,26 @@ export interface FileRoutesById {
   '/_authenticated/catalogue': typeof AuthenticatedCatalogueRoute
   '/_authenticated/styleguide': typeof AuthenticatedStyleguideRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/achats/nouveau': typeof AuthenticatedAchatsNouveauRoute
+  '/_authenticated/achats/': typeof AuthenticatedAchatsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/catalogue' | '/styleguide'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/catalogue'
+    | '/styleguide'
+    | '/achats/nouveau'
+    | '/achats/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/catalogue' | '/styleguide' | '/'
+  to:
+    | '/login'
+    | '/catalogue'
+    | '/styleguide'
+    | '/'
+    | '/achats/nouveau'
+    | '/achats'
   id:
     | '__root__'
     | '/_authenticated'
@@ -72,6 +104,8 @@ export interface FileRouteTypes {
     | '/_authenticated/catalogue'
     | '/_authenticated/styleguide'
     | '/_authenticated/'
+    | '/_authenticated/achats/nouveau'
+    | '/_authenticated/achats/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,6 +150,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCatalogueRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/achats/': {
+      id: '/_authenticated/achats/'
+      path: '/achats'
+      fullPath: '/achats/'
+      preLoaderRoute: typeof AuthenticatedAchatsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/achats/nouveau': {
+      id: '/_authenticated/achats/nouveau'
+      path: '/achats/nouveau'
+      fullPath: '/achats/nouveau'
+      preLoaderRoute: typeof AuthenticatedAchatsNouveauRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -123,12 +171,16 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCatalogueRoute: typeof AuthenticatedCatalogueRoute
   AuthenticatedStyleguideRoute: typeof AuthenticatedStyleguideRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedAchatsNouveauRoute: typeof AuthenticatedAchatsNouveauRoute
+  AuthenticatedAchatsIndexRoute: typeof AuthenticatedAchatsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCatalogueRoute: AuthenticatedCatalogueRoute,
   AuthenticatedStyleguideRoute: AuthenticatedStyleguideRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedAchatsNouveauRoute: AuthenticatedAchatsNouveauRoute,
+  AuthenticatedAchatsIndexRoute: AuthenticatedAchatsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

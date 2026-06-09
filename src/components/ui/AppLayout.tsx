@@ -5,7 +5,7 @@ import { Button } from './Button'
 import { useSession } from '~/lib/auth/SessionContext'
 import type { Role } from '~/lib/auth/session'
 
-type RouteTo = '/' | '/styleguide' | '/catalogue'
+type RouteTo = '/' | '/styleguide' | '/catalogue' | '/achats'
 
 type ActiveNavItem = { to: RouteTo; label: string; soon?: false }
 type PendingNavItem = { label: string; soon: true }
@@ -17,7 +17,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   super: [
     { to: '/',           label: 'Tableau de bord' },
     { to: '/catalogue',  label: 'Catalogue' },
-    { label: 'Achats',     soon: true },
+    { to: '/achats',     label: 'Achats' },
     { label: 'Emprunts',   soon: true },
     { label: 'Retours',    soon: true },
     { to: '/styleguide', label: 'Styleguide' },
