@@ -1,4 +1,173 @@
 @import 'tailwindcss' source('../');
+/* Police Inter (variable) chargée via CDN.
+ * Choix : police neutre, très lisible, optimisée pour interfaces de gestion.
+ * Variable = un seul fichier couvre toutes les graisses. */
+@import url('https://rsms.me/inter/inter.css');
+
+/* ============================================================
+ * Design System — Système de prêt de matériel IT College
+ * Source de vérité unique. Toute couleur/typo/espacement utilisé
+ * dans l'app doit venir de ces tokens (via les utilities Tailwind
+ * qu'ils génèrent : bg-marine-600, text-lime-400, rounded-lg, …).
+ * Voir DESIGN.md pour les règles d'usage.
+ * ============================================================ */
+
+@theme {
+  /* -------- Typographie -------- */
+  --font-sans:
+    'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+
+  /* Échelle typographique (modulaire, ratio ≈ 1.2) */
+  --text-xs: 0.75rem;       /* 12 */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;      /* 14 */
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;        /* 16 — corps */
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;      /* 18 */
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;       /* 20 */
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;       /* 24 — H3 */
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;     /* 30 — H2 */
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;      /* 36 — H1 */
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl: 3rem;         /* 48 — display */
+  --text-5xl--line-height: 1;
+
+  /* -------- Rayons d'angle -------- */
+  --radius-xs: 0.25rem;     /* 4  — badge, tag */
+  --radius-sm: 0.375rem;    /* 6  — input, select */
+  --radius-md: 0.5rem;      /* 8  — bouton */
+  --radius-lg: 0.75rem;     /* 12 — carte */
+  --radius-xl: 1rem;        /* 16 — modal, large card */
+  --radius-2xl: 1.25rem;    /* 20 */
+
+  /* -------- Ombres / élévation --------
+   * Tonalité légèrement bleutée pour rester en harmonie
+   * avec le marine plutôt que des ombres neutres pures. */
+  --shadow-xs: 0 1px 2px 0 rgb(30 30 63 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(30 30 63 / 0.08), 0 1px 2px -1px rgb(30 30 63 / 0.06);
+  --shadow-md: 0 4px 8px -2px rgb(30 30 63 / 0.10), 0 2px 4px -2px rgb(30 30 63 / 0.06);
+  --shadow-lg: 0 12px 20px -6px rgb(30 30 63 / 0.12), 0 4px 8px -4px rgb(30 30 63 / 0.08);
+  --shadow-xl: 0 24px 40px -12px rgb(30 30 63 / 0.18);
+  --shadow-ring: 0 0 0 3px rgb(60 61 150 / 0.25);
+  --shadow-ring-danger: 0 0 0 3px rgb(176 28 28 / 0.25);
+
+  /* -------- Couleurs : MARINE (primaire — identité IT College)
+   * Extrait du logo officiel : base = #3C3D96
+   * Contraste sur blanc : marine-600 = 9.46 (AAA), marine-700 = 11.44 (AAA) */
+  --color-marine-50:  #F6F6F9;
+  --color-marine-100: #EAEAF1;
+  --color-marine-200: #CECEE3;
+  --color-marine-300: #A5A5D5;
+  --color-marine-400: #6D6EC5;
+  --color-marine-500: #4647AF;
+  --color-marine-600: #3A3B92;  /* base brand */
+  --color-marine-700: #303178;
+  --color-marine-800: #24255B;
+  --color-marine-900: #1D1E3F;
+  --color-marine-950: #121226;
+
+  /* -------- Couleurs : LIME (accent — identité IT College)
+   * Extrait du logo officiel : base = #B1D237
+   * Toujours utilisé avec texte marine-900 dessus (contraste 10.20 AAA). */
+  --color-lime-50:  #F9FAF5;
+  --color-lime-100: #F0F2E8;
+  --color-lime-200: #E2E8C9;
+  --color-lime-300: #D1E099;
+  --color-lime-400: #BEDA58;  /* base brand */
+  --color-lime-500: #A7C82D;
+  --color-lime-600: #8BA725;
+  --color-lime-700: #73891F;
+  --color-lime-800: #576817;
+  --color-lime-900: #3C4715;
+  --color-lime-950: #252B0D;
+
+  /* -------- Couleurs : NEUTRES (légèrement teintées bleu/marine)
+   * Choisis pour s'harmoniser avec marine plutôt que gris neutre pur. */
+  --color-neutral-50:  #F7F7F8;
+  --color-neutral-100: #ECEDEF;
+  --color-neutral-200: #D4D8DE;
+  --color-neutral-300: #B2BBC8;
+  --color-neutral-400: #8596AD;
+  --color-neutral-500: #637692;
+  --color-neutral-600: #52637A;
+  --color-neutral-700: #445164;  /* corps texte */
+  --color-neutral-800: #333E4C;
+  --color-neutral-900: #262D35;
+  --color-neutral-950: #171B21;
+
+  /* -------- Sémantiques : SUCCESS (emerald) */
+  --color-success-50:  #F4FAF8;
+  --color-success-100: #E6F4EF;
+  --color-success-200: #C4EEE0;
+  --color-success-300: #8DECCD;
+  --color-success-400: #43EFB6;
+  --color-success-500: #13E19D;
+  --color-success-600: #10BC83;
+  --color-success-700: #0D9B6C;
+  --color-success-800: #0A7552;
+  --color-success-900: #0D4F39;
+  --color-success-950: #083023;
+
+  /* -------- Sémantiques : WARNING (amber) */
+  --color-warning-50:  #FBF8F4;
+  --color-warning-100: #F5EFE6;
+  --color-warning-200: #F0DFC2;
+  --color-warning-300: #F1CA89;
+  --color-warning-400: #F7B13B;
+  --color-warning-500: #EB970A;
+  --color-warning-600: #C47E08;
+  --color-warning-700: #A26807;
+  --color-warning-800: #7A4F05;
+  --color-warning-900: #52370A;
+  --color-warning-950: #322206;
+
+  /* -------- Sémantiques : DANGER (red) */
+  --color-danger-50:  #FAF5F5;
+  --color-danger-100: #F3E7E7;
+  --color-danger-200: #EBC7C7;
+  --color-danger-300: #E59494;
+  --color-danger-400: #E34F4F;
+  --color-danger-500: #D32222;
+  --color-danger-600: #B01C1C;
+  --color-danger-700: #911717;
+  --color-danger-800: #6E1212;
+  --color-danger-900: #4A1212;
+  --color-danger-950: #2D0B0B;
+
+  /* -------- Sémantiques : INFO (sky) */
+  --color-info-50:  #F4F9FA;
+  --color-info-100: #E6F0F4;
+  --color-info-200: #C3E1EF;
+  --color-info-300: #8BD0EF;
+  --color-info-400: #3FBBF3;
+  --color-info-500: #0EA4E7;
+  --color-info-600: #0C88C0;
+  --color-info-700: #0A709F;
+  --color-info-800: #075578;
+  --color-info-900: #0B3B50;
+  --color-info-950: #072431;
+
+  /* -------- Surfaces, fond, texte (alias sémantiques) --------
+   * Permettent d'évoluer plus tard (dark mode) sans toucher l'app. */
+  --color-background: #F7F7F8;       /* neutral-50 — fond appli */
+  --color-surface: #FFFFFF;          /* cartes, modales */
+  --color-surface-muted: #ECEDEF;    /* zones secondaires */
+  --color-border: #D4D8DE;           /* neutral-200 */
+  --color-border-strong: #B2BBC8;    /* neutral-300 */
+  --color-foreground: #1D1E3F;       /* marine-900 — titres */
+  --color-foreground-muted: #445164; /* neutral-700 — corps */
+  --color-foreground-subtle: #637692;/* neutral-500 — labels */
+  --color-ring: #4647AF;             /* marine-500 — focus */
+}
 
 @layer base {
   *,
@@ -6,25 +175,45 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--color-border, currentcolor);
   }
-}
 
-@layer base {
   html {
-    color-scheme: light dark;
-  }
-
-  * {
-    @apply border-gray-200 dark:border-gray-800;
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   html,
   body {
-    @apply text-gray-900 bg-gray-50 dark:bg-gray-950 dark:text-gray-200;
+    background-color: var(--color-background);
+    color: var(--color-foreground-muted);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
   }
 
-  .using-mouse * {
-    outline: none !important;
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-foreground);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Chiffres tabulaires partout où on affiche des montants/quantités. */
+  .tabular-nums,
+  td.num,
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Anneau de focus visible (clavier) — un seul style cohérent. */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-ring);
+    border-radius: var(--radius-sm);
+  }
+
+  .using-mouse :where(a, button, input, select, textarea, [tabindex]):focus {
+    outline: none;
+    box-shadow: none;
   }
 }

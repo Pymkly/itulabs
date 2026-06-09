@@ -5,6 +5,7 @@ Application interne de gestion du prêt de matériel électronique du laboratoir
 ## Stack (confirmée)
 - **Frontend + serveur** : TanStack Start (React), déployé sur **Cloudflare Workers**.
 - **Données / auth** : **Supabase** (PostgreSQL + Auth + Row Level Security).
+- **UI** : Tailwind v4. Design system documenté dans **`DESIGN.md`** — source de vérité unique pour couleurs, typographie, espacements, composants. Tous les écrans réutilisent les tokens (`@theme` dans `src/styles/app.css`) et les composants (`src/components/ui/`). Page de référence : `/styleguide`.
 - Accès données : `supabase-js` côté server functions ; types TypeScript générés depuis le schéma.
 - Langue : **tout en français** (UI et termes métier). Prix en **Ariary**, en entiers.
 - À vérifier à l'installation : l'adaptateur de déploiement Cloudflare de TanStack Start (l'outillage évolue vite — confirmer la méthode courante).
@@ -54,3 +55,4 @@ Flux : *équipe demande* → *responsable/super valide* → le **code crée les 
 - Français partout. PK en UUID. Prix entiers (Ariary). Horodatage en `timestamptz`.
 - Tout passe par les rôles. **Ne jamais** contourner la RLS avec la clé service côté client.
 - À noter : les prix (`materiel_pu`) sont actuellement visibles par tous. Si l'on veut les masquer aux équipes, exposer une vue « quantités sans prix » et restreindre `materiel_pu` — décision ouverte.
+- **UI** : aucun écran ne définit ses propres couleurs, tailles de police ou rayons en dur. Toujours via les tokens et composants de `DESIGN.md`. Si un besoin manque, étendre le système — pas un écran isolé.
