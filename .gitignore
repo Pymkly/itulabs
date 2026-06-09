@@ -12,3 +12,5 @@ supabase/.branches
 supabase/.temp
 
 .claude/settings.local.json
+src/routeTree.gen.ts
+worker-configuration.d.ts
