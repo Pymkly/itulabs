@@ -1,8 +1,6 @@
 @import 'tailwindcss' source('../');
-/* Police Inter (variable) chargée via CDN.
- * Choix : police neutre, très lisible, optimisée pour interfaces de gestion.
- * Variable = un seul fichier couvre toutes les graisses. */
-@import url('https://rsms.me/inter/inter.css');
+/* Police Inter (variable) chargée via <link> dans __root.tsx
+ * pour éviter l'ordre @import + permettre le preconnect. */
 
 /* ============================================================
  * Design System — Système de prêt de matériel IT College

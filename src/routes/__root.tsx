@@ -8,7 +8,6 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import * as React from 'react'
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
 import { NotFound } from '~/components/NotFound'
-import { AppLayout } from '~/components/ui'
 import appCss from '~/styles/app.css?url'
 import { seo } from '~/utils/seo'
 
@@ -30,6 +29,8 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
+      { rel: 'preconnect', href: 'https://rsms.me' },
+      { rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css' },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
@@ -50,12 +51,6 @@ export const Route = createRootRoute({
       { rel: 'manifest', href: '/site.webmanifest', color: '#fffff' },
       { rel: 'icon', href: '/favicon.ico' },
     ],
-    scripts: [
-      {
-        src: '/customScript.js',
-        type: 'text/javascript',
-      },
-    ],
   }),
   errorComponent: DefaultCatchBoundary,
   notFoundComponent: () => <NotFound />,
@@ -69,7 +64,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <AppLayout>{children}</AppLayout>
+        {children}
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
       </body>

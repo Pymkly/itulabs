@@ -25,7 +25,7 @@ import {
   Textarea,
 } from '~/components/ui'
 
-export const Route = createFileRoute('/styleguide')({
+export const Route = createFileRoute('/_authenticated/styleguide')({
   component: Styleguide,
 })
 

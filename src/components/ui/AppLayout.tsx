@@ -1,21 +1,46 @@
 import * as React from 'react'
 import { Link } from '@tanstack/react-router'
 import { cn } from './cn'
+import { Button } from './Button'
+import { useSession } from '~/lib/auth/SessionContext'
+import type { Role } from '~/lib/auth/session'
 
-type ActiveNavItem = { to: '/' | '/styleguide'; label: string; soon?: false }
+type RouteTo = '/' | '/styleguide'
+
+type ActiveNavItem = { to: RouteTo; label: string; soon?: false }
 type PendingNavItem = { label: string; soon: true }
 type NavItem = ActiveNavItem | PendingNavItem
 
-// Reflète les écrans cibles. `soon: true` = route pas encore créée,
-// affichée en désactivé pour qu'on visualise la nav finale.
-const NAV: NavItem[] = [
-  { to: '/',           label: 'Tableau de bord' },
-  { label: 'Catalogue',  soon: true },
-  { label: 'Achats',     soon: true },
-  { label: 'Emprunts',   soon: true },
-  { label: 'Retours',    soon: true },
-  { to: '/styleguide', label: 'Styleguide' },
-]
+// Items affichés pour chaque rôle. Les items `soon: true` correspondent aux
+// écrans pas encore construits — gardés visibles pour montrer la nav finale.
+const NAV_BY_ROLE: Record<Role, NavItem[]> = {
+  super: [
+    { to: '/',           label: 'Tableau de bord' },
+    { label: 'Catalogue',  soon: true },
+    { label: 'Achats',     soon: true },
+    { label: 'Emprunts',   soon: true },
+    { label: 'Retours',    soon: true },
+    { to: '/styleguide', label: 'Styleguide' },
+  ],
+  responsable: [
+    { to: '/',           label: 'Tableau de bord' },
+    { label: 'Catalogue',     soon: true },
+    { label: 'Emprunts',      soon: true },
+    { label: 'Retours',       soon: true },
+  ],
+  equipe: [
+    { to: '/',           label: 'Tableau de bord' },
+    { label: 'Catalogue',     soon: true },
+    { label: 'Mes emprunts',  soon: true },
+    { label: 'Mes retours',   soon: true },
+  ],
+}
+
+const ROLE_LABEL: Record<Role, string> = {
+  super: 'Administrateur',
+  responsable: 'Responsable',
+  equipe: 'Équipe',
+}
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,6 +55,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 }
 
 function Header() {
+  const { session, signOut } = useSession()
+  const items = NAV_BY_ROLE[session.profil.role]
+  const initial = (session.user.email ?? '?').slice(0, 1).toUpperCase()
+  const [signingOut, setSigningOut] = React.useState(false)
+
+  async function handleSignOut() {
+    setSigningOut(true)
+    try {
+      await signOut()
+    } finally {
+      setSigningOut(false)
+    }
+  }
+
   return (
     <header className="bg-surface border-b border-border">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-8">
@@ -44,7 +83,7 @@ function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-1 flex-1">
-          {NAV.map((item) =>
+          {items.map((item) =>
             item.soon ? (
               <span
                 key={item.label}
@@ -75,17 +114,28 @@ function Header() {
 
         <div className="ml-auto flex items-center gap-3 shrink-0">
           <div className="hidden sm:flex flex-col text-right leading-tight">
-            <span className="text-xs text-foreground-subtle">Connecté</span>
-            <span className="text-sm font-medium text-foreground">
-              Démo · super
+            <span className="text-xs text-foreground-subtle">
+              {ROLE_LABEL[session.profil.role]}
+            </span>
+            <span className="text-sm font-medium text-foreground truncate max-w-[14rem]">
+              {session.user.email ?? '—'}
             </span>
           </div>
           <div
             aria-hidden
             className="h-9 w-9 rounded-full bg-marine-600 text-white flex items-center justify-center text-sm font-semibold"
           >
-            D
+            {initial}
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}
+            disabled={signingOut}
+            aria-label="Se déconnecter"
+          >
+            {signingOut ? '…' : 'Déconnexion'}
+          </Button>
         </div>
       </div>
     </header>
@@ -97,7 +147,7 @@ function Footer() {
     <footer className="border-t border-border bg-surface">
       <div className="max-w-7xl mx-auto px-6 py-4 text-xs text-foreground-subtle flex items-center justify-between">
         <span>© IT College · Hackathon Juin 2026</span>
-        <span>v0 — Design system</span>
+        <span>v0 — Auth + rôles</span>
       </div>
     </footer>
   )
@@ -107,8 +157,8 @@ function Footer() {
 function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden>
-      <rect x="3"  y="6"  width="10" height="20" fill="#3A3B92" />
-      <rect x="19" y="6"  width="10" height="20" fill="#3A3B92" />
+      <rect x="3" y="6" width="10" height="20" fill="#3A3B92" />
+      <rect x="19" y="6" width="10" height="20" fill="#3A3B92" />
       <rect x="11" y="11" width="10" height="10" fill="#BEDA58" />
     </svg>
   )
