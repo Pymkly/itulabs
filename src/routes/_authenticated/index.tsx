@@ -57,10 +57,12 @@ function Home() {
   const { session } = useSession()
   const role = session.profil.role
 
+  const emailLocal = session.user.email?.split('@')[0]
+
   return (
     <>
       <PageHeader
-        title={`Bonjour, ${session.user.email ?? 'invité'}`}
+        title={emailLocal ? `Bonjour, ${emailLocal}` : 'Tableau de bord'}
         description={ROLE_DESCRIPTION[role]}
         actions={
           <Badge
@@ -77,7 +79,7 @@ function Home() {
         }
       />
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {TILES_BY_ROLE[role].map((t) => (
           <Card key={t.title}>
             <CardHeader>

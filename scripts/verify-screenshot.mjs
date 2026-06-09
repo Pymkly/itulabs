@@ -1,7 +1,9 @@
 /**
- * Capture la coquille super sans avoir le mdp : démarre un mini-proxy qui
- * injecte le cookie de session sur chaque requête vers le dev server,
+ * Capture la coquille connectée sans avoir le mdp : démarre un mini-proxy
+ * qui injecte le cookie de session sur chaque requête vers le dev server,
  * puis lance Chrome headless dessus et capture.
+ *
+ * Usage: node scripts/verify-screenshot.mjs [email] [upstream] [proxyPort] [outFile] [width] [height]
  */
 import http from 'node:http'
 import { spawn } from 'node:child_process'
@@ -14,6 +16,8 @@ const email = process.argv[2] ?? 'hrivonandrasana@gmail.com'
 const upstream = process.argv[3] ?? 'http://localhost:3001'
 const proxyPort = Number(process.argv[4] ?? 3099)
 const outFile = process.argv[5] ?? `${process.env.TEMP}\\itcollege\\super-shell-via-proxy.png`
+const width = Number(process.argv[6] ?? 1440)
+const height = Number(process.argv[7] ?? 1200)
 
 const projectRef = new URL(url).hostname.split('.')[0]
 const cookieName = `sb-${projectRef}-auth-token`
@@ -73,7 +77,9 @@ const chrome = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
 if (!existsSync(chrome)) { console.error('Chrome introuvable'); proxy.close(); process.exit(1) }
 const args = [
   '--headless=new', '--disable-gpu', '--hide-scrollbars',
-  '--window-size=1440,1200', '--virtual-time-budget=8000',
+  `--window-size=${width},${height}`,
+  '--force-device-scale-factor=1',
+  '--virtual-time-budget=8000',
   `--screenshot=${outFile}`, `http://localhost:${proxyPort}/`,
 ]
 await new Promise((resolve) => {
@@ -82,4 +88,4 @@ await new Promise((resolve) => {
 })
 
 proxy.close()
-console.log('screenshot:', outFile)
+console.log('screenshot:', outFile, `(${width}x${height})`)
