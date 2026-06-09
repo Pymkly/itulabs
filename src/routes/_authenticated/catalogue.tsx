@@ -40,6 +40,8 @@ function formatAr(n: number): string {
   return n.toLocaleString('fr-FR').replace(/ |,/g, ' ')
 }
 
+const PAGE_SIZE = 10
+
 function CataloguePage() {
   const data = Route.useLoaderData()
   const { session } = useSession()
@@ -49,6 +51,10 @@ function CataloguePage() {
   const [creating, setCreating] = React.useState(false)
   const [editing, setEditing] = React.useState<Materiel | null>(null)
   const [paliersOf, setPaliersOf] = React.useState<Materiel | null>(null)
+
+  // search + pagination (filtrage côté client : catalogue reste petit).
+  const [query, setQuery] = React.useState('')
+  const [page, setPage] = React.useState(1)
 
   // index paliers + stock par matériel pour rendre la table efficace
   const paliersByMateriel = React.useMemo(() => {
@@ -67,6 +73,27 @@ function CataloguePage() {
     }
     return m
   }, [data.stock])
+
+  const filtered = React.useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return data.materiels
+    return data.materiels.filter((m) => {
+      const hay = `${m.nom} ${m.categorie ?? ''}`.toLowerCase()
+      return hay.includes(q)
+    })
+  }, [data.materiels, query])
+
+  // Si le filtre rétrécit la liste, ramener la page dans la plage valide.
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, pageCount)
+  React.useEffect(() => {
+    if (page !== safePage) setPage(safePage)
+  }, [page, safePage])
+
+  const pageStart = (safePage - 1) * PAGE_SIZE
+  const pageRows = filtered.slice(pageStart, pageStart + PAGE_SIZE)
+  const rangeStart = filtered.length === 0 ? 0 : pageStart + 1
+  const rangeEnd = pageStart + pageRows.length
 
   return (
     <>
@@ -89,7 +116,18 @@ function CataloguePage() {
       {data.materiels.length === 0 ? (
         <EmptyState isSuper={isSuper} onCreate={() => setCreating(true)} />
       ) : (
-        <Table>
+        <>
+          <SearchBar
+            value={query}
+            onChange={(v) => {
+              setQuery(v)
+              setPage(1)
+            }}
+            total={data.materiels.length}
+            filtered={filtered.length}
+          />
+
+          <Table>
           <THead>
             <TR>
               <TH>Nom</TH>
@@ -101,7 +139,14 @@ function CataloguePage() {
             </TR>
           </THead>
           <TBody>
-            {data.materiels.map((m) => {
+            {pageRows.length === 0 && (
+              <TR>
+                <TD colSpan={isSuper ? 6 : 5} className="text-center text-foreground-subtle italic">
+                  Aucun matériel ne correspond à « {query} ».
+                </TD>
+              </TR>
+            )}
+            {pageRows.map((m) => {
               const paliers = paliersByMateriel.get(m.id) ?? []
               const stock = stockByMateriel.get(m.id) ?? 0
               return (
@@ -150,6 +195,16 @@ function CataloguePage() {
             })}
           </TBody>
         </Table>
+
+        <Pagination
+          page={safePage}
+          pageCount={pageCount}
+          rangeStart={rangeStart}
+          rangeEnd={rangeEnd}
+          total={filtered.length}
+          onChange={setPage}
+        />
+        </>
       )}
 
       {creating && (
@@ -174,6 +229,84 @@ function CataloguePage() {
         />
       )}
     </>
+  )
+}
+
+/* ---------------- Recherche + pagination ---------------- */
+
+function SearchBar({
+  value,
+  onChange,
+  total,
+  filtered,
+}: {
+  value: string
+  onChange: (v: string) => void
+  total: number
+  filtered: number
+}) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+      <div className="relative w-full sm:w-80">
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Rechercher (nom, catégorie)…"
+          aria-label="Rechercher dans le catalogue"
+        />
+      </div>
+      <p className="text-xs text-foreground-subtle tabular-nums">
+        {value.trim()
+          ? `${filtered} résultat${filtered > 1 ? 's' : ''} sur ${total}`
+          : `${total} matériel${total > 1 ? 's' : ''}`}
+      </p>
+    </div>
+  )
+}
+
+function Pagination({
+  page,
+  pageCount,
+  rangeStart,
+  rangeEnd,
+  total,
+  onChange,
+}: {
+  page: number
+  pageCount: number
+  rangeStart: number
+  rangeEnd: number
+  total: number
+  onChange: (p: number) => void
+}) {
+  if (pageCount <= 1) return null
+  return (
+    <div className="mt-3 flex items-center justify-between gap-3 text-sm">
+      <span className="text-foreground-subtle tabular-nums">
+        {rangeStart}–{rangeEnd} sur {total}
+      </span>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => onChange(page - 1)}
+          disabled={page <= 1}
+        >
+          Précédent
+        </Button>
+        <span className="text-foreground-muted tabular-nums">
+          {page} / {pageCount}
+        </span>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => onChange(page + 1)}
+          disabled={page >= pageCount}
+        >
+          Suivant
+        </Button>
+      </div>
+    </div>
   )
 }
 

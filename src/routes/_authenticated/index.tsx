@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   Badge,
   Card,
@@ -29,11 +29,13 @@ const ROLE_DESCRIPTION: Record<Role, string> = {
     'Vous consultez le catalogue et faites des demandes d’emprunt et de retour pour votre équipe.',
 }
 
-// Tuiles "à venir" — affichées selon le rôle, pour matérialiser l'arborescence
-// fonctionnelle sans encore construire les écrans métier.
-const TILES_BY_ROLE: Record<Role, { title: string; desc: string }[]> = {
+// `to` rend la tuile cliquable et enlève le badge « Bientôt » : on l'ajoute
+// au fur et à mesure que les écrans correspondants sont livrés.
+type Tile = { title: string; desc: string; to?: '/catalogue' }
+
+const TILES_BY_ROLE: Record<Role, Tile[]> = {
   super: [
-    { title: 'Catalogue', desc: 'Matériels et paliers de prix' },
+    { title: 'Catalogue', desc: 'Matériels et paliers de prix', to: '/catalogue' },
     { title: 'Achats', desc: 'Entrées de stock par achat' },
     { title: 'Équipes', desc: '12 équipes du hackathon' },
     { title: 'Emprunts', desc: 'Demandes et validations' },
@@ -41,13 +43,13 @@ const TILES_BY_ROLE: Record<Role, { title: string; desc: string }[]> = {
     { title: 'Stock', desc: 'État disponible + valeur' },
   ],
   responsable: [
-    { title: 'Catalogue', desc: 'Matériels et paliers de prix' },
+    { title: 'Catalogue', desc: 'Matériels et paliers de prix', to: '/catalogue' },
     { title: 'Emprunts', desc: 'Demandes à valider' },
     { title: 'Retours', desc: 'Restitutions à enregistrer' },
     { title: 'Stock', desc: 'État disponible + valeur' },
   ],
   equipe: [
-    { title: 'Catalogue', desc: 'Matériels disponibles' },
+    { title: 'Catalogue', desc: 'Matériels disponibles', to: '/catalogue' },
     { title: 'Mes emprunts', desc: 'Faire et suivre mes demandes' },
     { title: 'Mes retours', desc: 'Restituer le matériel emprunté' },
   ],
@@ -80,24 +82,45 @@ function Home() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {TILES_BY_ROLE[role].map((t) => (
-          <Card key={t.title}>
-            <CardHeader>
-              <div>
-                <CardTitle>{t.title}</CardTitle>
-                <p className="text-sm text-foreground-subtle mt-0.5">
-                  {t.desc}
+        {TILES_BY_ROLE[role].map((t) =>
+          t.to ? (
+            <Link key={t.title} to={t.to} className="block group">
+              <Card className="transition-shadow group-hover:shadow-md group-hover:border-marine-300">
+                <CardHeader>
+                  <div>
+                    <CardTitle>{t.title}</CardTitle>
+                    <p className="text-sm text-foreground-subtle mt-0.5">
+                      {t.desc}
+                    </p>
+                  </div>
+                  <Badge tone="marine">Ouvrir</Badge>
+                </CardHeader>
+                <CardBody>
+                  <p className="text-sm text-foreground-subtle">
+                    Accéder à l’écran.
+                  </p>
+                </CardBody>
+              </Card>
+            </Link>
+          ) : (
+            <Card key={t.title}>
+              <CardHeader>
+                <div>
+                  <CardTitle>{t.title}</CardTitle>
+                  <p className="text-sm text-foreground-subtle mt-0.5">
+                    {t.desc}
+                  </p>
+                </div>
+                <Badge tone="neutral">Bientôt</Badge>
+              </CardHeader>
+              <CardBody>
+                <p className="text-sm text-foreground-subtle">
+                  Cet écran sera ajouté dans une prochaine étape.
                 </p>
-              </div>
-              <Badge tone="neutral">Bientôt</Badge>
-            </CardHeader>
-            <CardBody>
-              <p className="text-sm text-foreground-subtle">
-                Cet écran sera ajouté dans une prochaine étape.
-              </p>
-            </CardBody>
-          </Card>
-        ))}
+              </CardBody>
+            </Card>
+          ),
+        )}
       </div>
     </>
   )
