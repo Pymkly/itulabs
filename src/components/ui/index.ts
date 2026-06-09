@@ -14,4 +14,5 @@ export {
 export { Badge, StatutBadge, EtatBadge } from './Badge'
 export type { BadgeProps, StatutDemande, EtatEmprunt } from './Badge'
 export { Table, THead, TBody, TR, TH, TD } from './Table'
+export { Modal, ModalBody, ModalFooter } from './Modal'
 export { AppLayout, PageHeader } from './AppLayout'

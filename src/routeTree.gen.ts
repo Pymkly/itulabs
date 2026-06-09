@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedStyleguideRouteImport } from './routes/_authenticated/styleguide'
+import { Route as AuthenticatedCatalogueRouteImport } from './routes/_authenticated/catalogue'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -33,14 +34,21 @@ const AuthenticatedStyleguideRoute = AuthenticatedStyleguideRouteImport.update({
   path: '/styleguide',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCatalogueRoute = AuthenticatedCatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/catalogue': typeof AuthenticatedCatalogueRoute
   '/styleguide': typeof AuthenticatedStyleguideRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/catalogue': typeof AuthenticatedCatalogueRoute
   '/styleguide': typeof AuthenticatedStyleguideRoute
   '/': typeof AuthenticatedIndexRoute
 }
@@ -48,18 +56,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/catalogue': typeof AuthenticatedCatalogueRoute
   '/_authenticated/styleguide': typeof AuthenticatedStyleguideRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/styleguide'
+  fullPaths: '/' | '/login' | '/catalogue' | '/styleguide'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/styleguide' | '/'
+  to: '/login' | '/catalogue' | '/styleguide' | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
+    | '/_authenticated/catalogue'
     | '/_authenticated/styleguide'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
@@ -99,15 +109,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStyleguideRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/catalogue': {
+      id: '/_authenticated/catalogue'
+      path: '/catalogue'
+      fullPath: '/catalogue'
+      preLoaderRoute: typeof AuthenticatedCatalogueRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCatalogueRoute: typeof AuthenticatedCatalogueRoute
   AuthenticatedStyleguideRoute: typeof AuthenticatedStyleguideRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCatalogueRoute: AuthenticatedCatalogueRoute,
   AuthenticatedStyleguideRoute: AuthenticatedStyleguideRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }

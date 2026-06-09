@@ -5,7 +5,7 @@ import { Button } from './Button'
 import { useSession } from '~/lib/auth/SessionContext'
 import type { Role } from '~/lib/auth/session'
 
-type RouteTo = '/' | '/styleguide'
+type RouteTo = '/' | '/styleguide' | '/catalogue'
 
 type ActiveNavItem = { to: RouteTo; label: string; soon?: false }
 type PendingNavItem = { label: string; soon: true }
@@ -16,7 +16,7 @@ type NavItem = ActiveNavItem | PendingNavItem
 const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   super: [
     { to: '/',           label: 'Tableau de bord' },
-    { label: 'Catalogue',  soon: true },
+    { to: '/catalogue',  label: 'Catalogue' },
     { label: 'Achats',     soon: true },
     { label: 'Emprunts',   soon: true },
     { label: 'Retours',    soon: true },
@@ -24,13 +24,13 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   ],
   responsable: [
     { to: '/',           label: 'Tableau de bord' },
-    { label: 'Catalogue',     soon: true },
+    { to: '/catalogue',  label: 'Catalogue' },
     { label: 'Emprunts',      soon: true },
     { label: 'Retours',       soon: true },
   ],
   equipe: [
     { to: '/',           label: 'Tableau de bord' },
-    { label: 'Catalogue',     soon: true },
+    { to: '/catalogue',  label: 'Catalogue' },
     { label: 'Mes emprunts',  soon: true },
     { label: 'Mes retours',   soon: true },
   ],
@@ -238,8 +238,8 @@ function MobileDrawer({
   return (
     <div
       id="mobile-menu"
-      role="dialog"
-      aria-modal="true"
+      role={open ? 'dialog' : undefined}
+      aria-modal={open ? 'true' : undefined}
       aria-hidden={!open}
       className={cn(
         'lg:hidden fixed inset-0 z-50',

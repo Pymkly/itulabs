@@ -20,6 +20,7 @@ const outFile = process.argv[5] ?? path.join(os.tmpdir(), 'itcollege', 'shell-cd
 const width = Number(process.argv[6] ?? 390)
 const height = Number(process.argv[7] ?? 1300)
 const cdpPort = Number(process.argv[8] ?? 9222)
+const targetPath = process.argv[9] ?? process.env.PATH_TO_CAPTURE ?? '/'
 
 const projectRef = new URL(url).hostname.split('.')[0]
 const cookieName = `sb-${projectRef}-auth-token`
@@ -130,7 +131,7 @@ const navigated = new Promise((r) => {
   }
   ws.addEventListener('message', onMsg)
 })
-await send('Page.navigate', { url: `http://localhost:${proxyPort}/` })
+await send('Page.navigate', { url: `http://localhost:${proxyPort}${targetPath}` })
 await navigated
 // petite attente pour fonts + hydration
 await new Promise((r) => setTimeout(r, 1500))
@@ -139,6 +140,27 @@ await new Promise((r) => setTimeout(r, 1500))
 if (process.env.CLICK_BURGER === '1') {
   await send('Runtime.evaluate', {
     expression: `document.querySelector('[aria-controls="mobile-menu"]')?.click()`,
+  })
+  await new Promise((r) => setTimeout(r, 400))
+}
+
+// Click sur un selector arbitraire (CSS contains :has-text() not natively
+// supported by querySelector; on fait du XPath via document.evaluate).
+if (process.env.CLICK_SELECTOR) {
+  await send('Runtime.evaluate', {
+    expression: `(() => { const el = document.querySelector(${JSON.stringify(process.env.CLICK_SELECTOR)}); if (el) el.click(); return !!el })()`,
+  })
+  await new Promise((r) => setTimeout(r, 400))
+}
+
+if (process.env.CLICK_TEXT) {
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      const want = ${JSON.stringify(process.env.CLICK_TEXT)}.trim().toLowerCase();
+      const candidates = [...document.querySelectorAll('button, a, [role=button]')];
+      const el = candidates.find(e => e.textContent.trim().toLowerCase().includes(want));
+      if (el) el.click(); return !!el;
+    })()`,
   })
   await new Promise((r) => setTimeout(r, 400))
 }
